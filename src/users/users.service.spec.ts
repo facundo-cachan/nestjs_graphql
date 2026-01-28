@@ -57,14 +57,31 @@ describe('UsersService', () => {
         avatar: 'https://example.com/avatar.jpg',
       };
 
+      mockRepository.findOne.mockResolvedValue(null); // No existing user
       mockRepository.create.mockReturnValue(mockUser);
       mockRepository.save.mockResolvedValue(mockUser);
 
       const result = await service.create(createUserInput);
 
       expect(result).toEqual(mockUser);
+      expect(mockRepository.findOne).toHaveBeenCalledWith({
+        where: { email: createUserInput.email },
+      });
       expect(mockRepository.create).toHaveBeenCalledWith(createUserInput);
       expect(mockRepository.save).toHaveBeenCalledWith(mockUser);
+    });
+
+    it('should throw ConflictException if email already exists', async () => {
+      const createUserInput: CreateUserInput = {
+        email: 'existing@example.com',
+        name: 'Test User',
+      };
+
+      mockRepository.findOne.mockResolvedValue(mockUser);
+
+      await expect(service.create(createUserInput)).rejects.toThrow(
+        'User with email existing@example.com already exists',
+      );
     });
   });
 

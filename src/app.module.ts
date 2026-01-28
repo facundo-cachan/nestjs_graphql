@@ -28,7 +28,7 @@ import { UsersModule } from './users/users.module';
         password: configService.get<string>('DB_PASSWORD', 'password'),
         database: configService.get<string>('DB_DATABASE', 'nestjs_graphql'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get<string>('NODE_ENV') === 'development',
+        synchronize: configService.get<boolean>('DB_SYNCHRONIZE', false),
         logging: configService.get<string>('NODE_ENV') === 'development',
       }),
     }),

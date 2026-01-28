@@ -7,15 +7,19 @@ import { JwtPayload } from '../auth.service';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly configService: ConfigService) {
+    const secret = configService.get<string>('JWT_SECRET');
+    if (!secret) {
+      throw new Error('JWT_SECRET is not defined in environment variables');
+    }
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET', 'your-secret-key'),
+      secretOrKey: secret,
     });
   }
 
   async validate(payload: JwtPayload): Promise<JwtPayload> {
-    if (!payload || !payload.sub) {
+    if (!payload || !payload.sub || !payload.email) {
       throw new UnauthorizedException('Invalid token payload');
     }
 

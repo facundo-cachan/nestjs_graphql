@@ -9,8 +9,11 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  // Enable CORS
-  app.enableCors();
+  // Enable CORS with proper configuration
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN || '*',
+    credentials: true,
+  });
 
   // Global validation pipe
   app.useGlobalPipes(
