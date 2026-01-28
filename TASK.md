@@ -24,11 +24,14 @@ npm install -g @nestjs/cli
 # If starting from scratch (not in existing repo)
 nest new nestjs_graphql
 
-# Or initialize in the current directory
+# Or initialize in the current directory (requires empty directory)
+# Note: The directory must be empty for this command to work
 nest new .
 ```
 
 When prompted, choose your preferred package manager (npm or yarn).
+
+**Note**: If you're working with an existing repository, you can manually create the necessary files or use the CLI to generate individual components instead of initializing a full project.
 
 ## Install Dependencies
 
@@ -59,7 +62,7 @@ npm install --save-dev @types/node
 After initialization, your project should have the following structure:
 
 ```
-nestjs_graphql/
+project-root/
 ├── src/
 │   ├── app.module.ts          # Root application module
 │   ├── app.controller.ts      # Basic controller
@@ -90,7 +93,9 @@ import { join } from 'path';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      playground: true, // Enable GraphQL Playground
+      // For Apollo Server v4+, use introspection instead of playground
+      introspection: true,
+      // For Apollo Server v3, you can use: playground: true
     }),
   ],
 })
@@ -143,7 +148,12 @@ npm run start:dev
 ```
 
 The server will start on `http://localhost:3000` (default).
-GraphQL Playground will be available at `http://localhost:3000/graphql`.
+GraphQL endpoint will be available at `http://localhost:3000/graphql`.
+
+**GraphQL IDE Access**:
+- For **Apollo Server v4+**: Navigate to `http://localhost:3000/graphql` in your browser, and Apollo Sandbox will launch automatically
+- For **Apollo Server v3**: GraphQL Playground will be available at the same URL if configured
+- Alternatively, use standalone tools like [GraphQL Playground](https://github.com/graphql/graphql-playground) or [Altair GraphQL Client](https://altairgraphql.dev/)
 
 ### Production Mode
 
@@ -152,11 +162,13 @@ npm run build
 npm run start:prod
 ```
 
-### Watch Mode
+### Standard Mode (No Hot-Reload)
 
 ```bash
 npm run start
 ```
+
+**Note**: This runs the application without watch mode. For development with hot-reload, use `npm run start:dev` instead.
 
 ## Testing
 
