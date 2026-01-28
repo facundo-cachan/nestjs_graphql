@@ -19,7 +19,7 @@ export class UsersResolver {
 
   @Query(() => [User], { name: 'users' })
   @UseGuards(GqlAuthGuard)
-  async findAll(@CurrentUser() user: JwtPayload): Promise<User[]> {
+  async findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
