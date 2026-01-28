@@ -1,0 +1,106 @@
+# Base Organization Unit for Users
+dn: ou=users,dc=organizacion,dc=com
+objectClass: organizationalUnit
+ou: users
+
+# Base Organization Unit for Groups
+dn: ou=groups,dc=organizacion,dc=com
+objectClass: organizationalUnit
+ou: groups
+
+# User 1: John Doe (Admin)
+dn: uid=jdoe,ou=users,dc=organizacion,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: jdoe
+cn: John Doe
+sn: Doe
+givenName: John
+mail: jdoe@organizacion.com
+userPassword: password123
+uidNumber: 10001
+gidNumber: 10001
+homeDirectory: /home/jdoe
+loginShell: /bin/bash
+o: Agencia Nacional de Seguridad Vial
+title: Administrador de Sistema
+
+# User 2: Jane Smith (Manager)
+dn: uid=jsmith,ou=users,dc=organizacion,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: jsmith
+cn: Jane Smith
+sn: Smith
+givenName: Jane
+mail: jsmith@organizacion.com
+userPassword: password123
+uidNumber: 10002
+gidNumber: 10002
+homeDirectory: /home/jsmith
+loginShell: /bin/bash
+o: Agencia Nacional de Seguridad Vial
+title: Gerente de Operaciones
+
+# User 3: Bob Johnson (Operator)
+dn: uid=bjohnson,ou=users,dc=organizacion,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: bjohnson
+cn: Bob Johnson
+sn: Johnson
+givenName: Bob
+mail: bjohnson@organizacion.com
+userPassword: password123
+uidNumber: 10003
+gidNumber: 10003
+homeDirectory: /home/bjohnson
+loginShell: /bin/bash
+o: Agencia Nacional de Seguridad Vial
+title: Operador de Sistema
+
+# User 4: Alice Williams (Auditor)
+dn: uid=awilliams,ou=users,dc=organizacion,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: awilliams
+cn: Alice Williams
+sn: Williams
+givenName: Alice
+mail: awilliams@organizacion.com
+userPassword: password123
+uidNumber: 10004
+gidNumber: 10004
+homeDirectory: /home/awilliams
+loginShell: /bin/bash
+o: Agencia Nacional de Seguridad Vial
+title: Auditora
+
+# Group: Admins
+dn: cn=admins,ou=groups,dc=organizacion,dc=com
+objectClass: groupOfNames
+cn: admins
+member: uid=jdoe,ou=users,dc=organizacion,dc=com
+
+# Group: Managers
+dn: cn=managers,ou=groups,dc=organizacion,dc=com
+objectClass: groupOfNames
+cn: managers
+member: uid=jsmith,ou=users,dc=organizacion,dc=com
+
+# Group: Operators
+dn: cn=operators,ou=groups,dc=organizacion,dc=com
+objectClass: groupOfNames
+cn: operators
+member: uid=bjohnson,ou=users,dc=organizacion,dc=com
+member: uid=jsmith,ou=users,dc=organizacion,dc=com
+
+# Group: Auditors
+dn: cn=auditors,ou=groups,dc=organizacion,dc=com
+objectClass: groupOfNames
+cn: auditors
+member: uid=awilliams,ou=users,dc=organizacion,dc=com

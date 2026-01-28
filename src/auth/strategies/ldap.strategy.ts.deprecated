@@ -1,0 +1,60 @@
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import Strategy from 'passport-ldapauth';
+
+import type { Request } from 'express';
+
+/**
+ * LDAP authentication strategy using Passport.
+ * 
+ * @description Connects to corporate LDAP server for user authentication.
+ * Performs bind operation and retrieves user attributes.
+ * 
+ * @example
+ * Configuration requires environment variables:
+ * - LDAP_URL: ldap://corp-idp.com:389
+ * - LDAP_BIND_DN: cn=admin,dc=org,dc=com
+ * - LDAP_BIND_PASSWORD: password
+ * - LDAP_SEARCH_BASE: ou=users,dc=org,dc=com
+ */
+@Injectable()
+export class LdapStrategy extends PassportStrategy(Strategy, 'ldap') {
+  constructor() {
+    super({
+      passReqToCallback: true,
+      server: {
+        url: process.env.LDAP_URL || 'ldap://localhost:389',
+        bindDN: process.env.LDAP_BIND_DN || 'cn=admin,dc=organizacion,dc=com',
+        bindCredentials: process.env.LDAP_BIND_PASSWORD || 'adminpassword',
+        searchBase: process.env.LDAP_SEARCH_BASE || 'dc=organizacion,dc=com',
+        searchFilter: '(uid={{username}})',
+        groupSearchBase: process.env.LDAP_GROUP_BASE || 'ou=groups,dc=organizacion,dc=com',
+        groupSearchFilter: '(member={{dn}})',
+        reconnect: true,
+      },
+    });
+  }
+
+  /**
+   * Validates LDAP user and transforms attributes.
+   * 
+   * @param req Express request object
+   * @param user LDAP user object with attributes
+   * @returns Normalized user object
+   * @throws UnauthorizedException if user is invalid
+   */
+  async validate(req: Request, user: any) {
+    if (!user) {
+      throw new UnauthorizedException('Invalid LDAP credentials');
+    }
+
+    // Transform LDAP attributes to internal user model
+    return {
+      userId: user.uid || user.sAMAccountName,
+      email: user.mail || user.email,
+      fullName: user.cn || user.displayName,
+      organization: user.o || user.company,
+      dn: user.dn,
+    };
+  }
+}

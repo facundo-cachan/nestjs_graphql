@@ -1,0 +1,30 @@
+### Variables
+@baseUrl = @{{$dotenv API_URL}}
+@rbacUrl = @{{$dotenv RBAC_URL}}
+@token = {{signIn.response.body.access_token}}
+
+### Health Check
+GET {{baseUrl}}/auth/health
+
+### Login exitoso
+# @name signIn
+POST {{baseUrl}}/auth/signIn
+Content-Type: application/json
+
+{
+  "username": "superadmin",
+  "password": "SuperSecure123!"
+}
+
+### Usar token en endpoint protegido
+GET {{baseUrl}}/api/some-resource
+Authorization: Bearer {{token}}
+
+### Verificar directamente con RBAC (comparación)
+POST {{rbacUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "superadmin",
+  "password": "SuperSecure123!"
+}
